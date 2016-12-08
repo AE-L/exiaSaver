@@ -1,7 +1,1 @@
-/* ICI LES PROTOTYPES DE FONCTION
-
-ex:
-
-void ez(int ...);
-
-*/
+#ifndef FONCTIONS_H
