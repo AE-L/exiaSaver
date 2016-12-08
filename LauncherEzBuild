@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+
+int my_rand();
+void config();
+void autoconfig();
+
+int main(int argc, char *argv[], char *envp[])
+{
+  int execNb;
+  printf("Running ExiaSaver . . . ");
+
+  if(argc>1)
+    {
+    if(strcmp(argv[1], "-cfg") == 0)
+      {
+        printf("Config avancee !\n");
+        config();
+      }
+    else
+      {
+	printf("option introuvable !");
+      }
+    }
+  
+  else
+    {
+        printf("Auto config !!\n");
+        autoconfig();
+    }
+    
+  execNb = my_rand();
+  printf("[%d]\n", execNb);
+  return 0;
+}
+
+int my_rand()
+{
+    srand(time(NULL));
+    int randomValue;
+    randomValue = rand()%3+1;
+
+    return(randomValue);
+}
+
+void config()
+{
+  printf(" ");
+}
+
+void autoconfig()
+{
+  
+  char *path = getenv("PATH");
+  //putenv ("EXIASAVER_HOME=path");
+  printf("%s", path);
+}
