@@ -1,8 +1,6 @@
-/* ICI LES FONCTIONS:
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "fonctions.h"
 
-ex: 
-
-void ez(int ...)
-{
- printf("%d", ...);
-}
+/* ex: void mafonction(int ...); */
