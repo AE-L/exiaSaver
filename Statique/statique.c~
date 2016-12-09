@@ -1,0 +1,222 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <sys/ioctl.h>
+
+char* CHEMIN_IMAGE = "IMAGE";
+
+int my_rand()
+{
+    srand(time(NULL));
+    int nbgen=rand()%3+1;
+    return nbgen;
+}
+
+int position_X(char* tab_head)
+{
+    char tab_x[1];
+    int i;
+    int caractereActuel;
+    int pos_x;
+    FILE* image;
+    image = fopen(CHEMIN_IMAGE,"r");
+
+    for(i=0;i<8;i++)
+            {
+                caractereActuel = fgetc(image);
+                tab_head[i] = caractereActuel;
+            }
+            fclose(image);
+
+            //Detection de des dimension
+            tab_x[0] = tab_head[3];
+            tab_x[1] = tab_head[4];
+            sscanf(tab_x, "%d", &pos_x);
+
+    return pos_x;
+}
+
+int position_Y(char* tab_head)
+{
+    char tab_y[1];
+    int i;
+    int caractereActuel;
+    int pos_y;
+    FILE* image;
+    image = fopen(CHEMIN_IMAGE,"r");
+
+    for(i=0;i<8;i++)
+            {
+                caractereActuel = fgetc(image);
+                tab_head[i] = caractereActuel;
+            }
+            fclose(image);
+
+            //Detection de des dimension
+            tab_y[0] = tab_head[6];
+            tab_y[1] = tab_head[7];
+            sscanf(tab_y, "%d", &pos_y);
+
+    return pos_y;
+}
+
+char* load_screen(char* screen)
+{
+    FILE* image;
+    int caractereActuel;
+    int i = 0;
+
+    image = fopen(CHEMIN_IMAGE,"r");
+    for (i=0;i<8;i++)
+    {
+        caractereActuel = fgetc(image);
+    }
+
+    do
+        {
+            caractereActuel = fgetc(image);
+            screen[i] = caractereActuel;
+            i++;
+
+        } while (caractereActuel != EOF);
+        fclose(image);
+
+    return screen;
+}
+
+void affichage(char* screen, int pos_x, int pos_y)
+{
+    int centrage_x;
+    int centrage_y;
+    
+    //Calcule la taille de la console.
+    struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w);
+
+    //Calcul du centre
+    centrage_x = ((w.ws_col - pos_x) / 2);
+    centrage_y = ((w.ws_row - pos_y) / 2);
+    printf("%d",centrage_x);
+    printf("%d",centrage_y);
+    getchar()
+    
+    
+    //Affcihe et centre.
+    int i = 0;
+    int j = 0;
+    int x;
+    int y;
+
+    for (y=0;y<centrage_y;y++)
+      {
+	printf("\n");
+      }
+    for (x=0;x<centrage_x;x++)
+      {
+	printf(" ");
+      }
+    
+    for (i=0;i<3850;i++)
+                {
+                    switch(screen[i])
+                    {
+                    case '0':
+                        printf(" ");
+                        break;
+                    case '1':
+                        printf("█");
+                        break;
+                    }
+                    if (j == 160)
+                    {
+                        j=0;
+                        printf("\n");
+			for (x=0;centrage_x;x++)
+			  {
+			    printf(" ");
+			  }
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                }
+}
+
+int main()
+{
+    //VARIABLE
+    FILE* image;
+
+    int x = 1;
+    int ch = NULL;
+
+    int pos_x;
+    int pos_y;
+
+    char *tab_head;
+    char *screen;
+    tab_head = malloc(8*(sizeof(char*)));
+    screen = malloc(3850*(sizeof(char*)));
+    char *tab_full;
+    //FIN VARIABLE
+    system("clear");
+    x = my_rand();
+
+    //CHOIX DE L'IMAGE
+    switch (x)
+    {
+    //IMAGE 1
+    case 1:
+        CHEMIN_IMAGE = "stat_1.pbm";
+        if (image != NULL)
+        {
+            //Detection de des dimension
+            pos_x = position_X(tab_head);
+            pos_y = position_Y(tab_head);
+            //Chargement de l'image dans un tableau
+            load_screen(screen);
+            //Affichage de l'image par le biais du tableau
+            affichage(screen,pos_x,pos_y);
+
+
+        }
+        break;
+    //IMAGE 2
+    case 2:
+        CHEMIN_IMAGE = "stat_2.pbm";
+        if (image != NULL)
+        {
+            //Detection de des dimension
+            pos_x = position_X(tab_head);
+            pos_y = position_Y(tab_head);
+            //Chargement de l'image dans un tableau
+            load_screen(screen);
+            //Affichage de l'image par le biais du tableau
+            affichage(screen,pos_x,pos_y);
+        }
+        break;
+    //IMAGE 3
+    case 3:
+        CHEMIN_IMAGE = "stat_3.pbm";
+        if (image != NULL)
+        {
+            //Detection de des dimension
+            pos_x = position_X(tab_head);
+            pos_y = position_Y(tab_head);
+            //Chargement de l'image dans un tableau
+            load_screen(screen);
+            //Affichage de l'image par le biais du tableau
+            affichage(screen,pos_x,pos_y);
+        }
+        break;
+    }
+
+    /* while (ch == NULL)
+    {
+        ch =getch();
+	}*/
+
+free(tab_head);
+free(screen);
+}
