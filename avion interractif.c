@@ -138,12 +138,28 @@ int main(void)
             {
             case KEYBOARDU:
               planewidth=planewidth-1;
+              if (planewidth<0)
+              {
+              	planewidth = w.ws_row;
+              }	
             case KEYBOARDD:
               planewidth=planewidth+1;
+              if (planewidth>w.ws_row)
+              {
+              	planewidth = 0;
+              }
             case KEYBOARDR:
               planelength=planelength+1;
+              if (planelength>w.ws_col)
+              {
+              	planelength = 0;
+              }
             case KEYBOARDL:
               planelength=planelength-1;
+              if (planelength<0)
+              {
+              	planelength = w.ws_col;
+              }
             }
         }
     }
