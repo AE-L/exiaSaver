@@ -32,13 +32,23 @@ int arrondi(float a)  /*round a number*/
 
 int mysleep(float temps)
 {
-	clock_t arrivee=clock()+(temps*CLOCKS_PER_SEC); // On calcule le moment où l'attente devra s'arrêter
+	clock_t arrivee=clock()+(temps*CLOCKS_PER_SEC); /*calculating the waiting time*/ 
     while(clock()<arrivee);
 }
 
 int planedisplay(int keys, int planewidth, int planelength) /*display the plane according of the position and direction*/
 {
   printf("\033c"); /*clean the terminal*/
+  int consoleboard[w.ws_row][w.ws_col];
+  int l = 0;
+  int k = 0;
+  for (l=0; l<w.ws_row;l++) /*initializes the values in the board*/
+  {
+  	for (k=0; k<w.ws_col; k++)
+  	{
+  		consoleboard[l][k]=0;
+  	}
+  }
   FILE* fichier = NULL; /*initializes a poiteur*/
   switch(keys) /*open the picture according of the direction*/
   {
@@ -53,11 +63,12 @@ int planedisplay(int keys, int planewidth, int planelength) /*display the plane 
  
   }
  
-   if (fichier != NULL) /*display the plane on the screen*/
+   if (fichier != NULL) /*get the .bpm in a board*/
     {
       int i = 0;
       int j = 0;
       int cursor;
+      int planeboard[6][6];
       fseek(fichier, 7, SEEK_SET); /*moves the read curseur to don't read the first lines*/
       for(j =0;j<6;j++)  
         {
@@ -67,13 +78,12 @@ int planedisplay(int keys, int planewidth, int planelength) /*display the plane 
           switch(cursor) /*write a special character in the console according of the bpm file*/
             {
             case '0':
-              printf(" ");
+              planeboard[j][i]=0;
               break;
             case '1':
-              printf("█");
+              planeboard[j][i]=1;
               break;
-        case '\n':
-        printf("\n");
+        
             }
          }
          }
@@ -84,6 +94,44 @@ int planedisplay(int keys, int planewidth, int planelength) /*display the plane 
       {
     printf("\nOpening Error\n");
       }
+    /*fonction intégration dans la console*/
+      for(j =0;j<6;j++)  
+        {
+          for(i =0;i<6;i++)
+        {
+        	if (planewidth+j>w.ws_row && planelength+i>w.ws_col)
+        	{
+        		consoleboard[planewidth+j-w.ws_row][planelength+i-w.ws_col] = planeboard[j][i];
+        	}
+        	if(planewidth+j>w.ws_row)
+        	{
+        		consoleboard[planewidth+j-w.ws_row][planelength+i] = planeboard[j][i];
+        	}
+        	if(planelength+i>w.ws_col)
+        	{
+        		consoleboard[planewidth+j][planelength+i-w.ws_col] = planeboard[j][i];
+        	}
+        	if(planewidth+j<w.ws_row && planelength+i<w.ws_col)
+        	{
+              consoleboard[planewidth+j][planelength+i] = planeboard[j][i];
+        	}
+         }
+         }
+    for (l=0; l<w.ws_row;l++) /*initializes the values in the board*/
+  {
+  	for (k=0; k<w.ws_col; k++)
+  	{
+  		character = consoleboard[l][k];
+  		if(character==1)
+  		{
+  			printf("█");
+  		}
+  		else
+  		{
+  			printf(" ")
+  		}
+  	}
+  }  
     return 0;
 }
  
@@ -100,8 +148,9 @@ int main(int argc, char *argv[])
   int oldplanelength;
   int oldconsolewidth;
   int oldconsolelength;
-    taille(); /*give the height of the console*/
-    oldconsolewidth = w.ws_row; /*save the console */
+
+    taille(); /*give the size of the console*/
+    oldconsolewidth = w.ws_row; /*save the console size */
     oldconsolelength =w.ws_col;
     planewidth = rand_(w.ws_row); /*choose a random position in the console*/
     oldplanewidth = planewidth; /*save the old value*/
@@ -123,6 +172,7 @@ int main(int argc, char *argv[])
     /*begin while*/
     while(newhotkey != KEYBOARDEXIT) /*run while the user don't tape the x keys*/
     {
+      mysleep(0.5);
       taille(); /*give the height of the console*/
       planewidth=(w.ws_row/(oldconsolewidth/oldplanewidth)); /*if the height of the console change the plane position change proportionally*/
       planewidth=arrondi(planewidth);
