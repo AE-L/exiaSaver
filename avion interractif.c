@@ -117,11 +117,11 @@ int planedisplay(int keys, int planewidth, int planelength) /*display the plane 
         	}
          }
          }
-    for (l=0; l<w.ws_row;l++) /*initializes the values in the board*/
+    for (j=0; j<w.ws_row;j++) /*initializes the values in the board*/
   {
-  	for (k=0; k<w.ws_col; k++)
+  	for (i=0; i<w.ws_col; i++)
   	{
-  		character = consoleboard[l][k];
+  		 int character = consoleboard[j][i];
   		if(character==1)
   		{
   			printf("█");
@@ -179,7 +179,8 @@ int main(int argc, char *argv[])
       planelength=(w.ws_col/(oldconsolelength/oldplanelength));
       planelength=arrondi(planelength);
       oldconsolewidth = w.ws_row; /*save the old value of the console height*/
-      oldconsolelength = w.ws_col;       
+      oldconsolelength = w.ws_col;
+
       planedisplay(newhotkey, planewidth, planelength); /*call the fonction to display the plane on the console with the different parameter*/
  
      
